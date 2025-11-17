@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  body {
+    @apply font-sans bg-white text-black leading-tight text-[13px];
+  }
+}
+
+/* Custom Swiss Design styles */
+.border-b-3 {
+  border-bottom-width: 3px;
+}
+
+/* Print styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 25mm 20mm;
+  }
+
+  body {
+    @apply p-0 text-[11px];
+  }
+
+  .proforma-document::before {
+    content: 'PROFORMA';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 140px;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.04);
+    z-index: 0;
+    pointer-events: none;
+    letter-spacing: 25px;
+  }
+
+  .proforma-document > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Hide UI elements in print */
+  button, input[type="radio"], .no-print {
+    display: none !important;
+  }
+}
