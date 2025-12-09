@@ -34,6 +34,12 @@ export const SellerSetupModal: React.FC<SellerSetupModalProps> = ({
             </p>
           </div>
 
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+            <p className="text-[12px] text-blue-800">
+              <strong>💡 Tip:</strong> Możesz wyszukać swoją firmę w KRS powyżej - dane wypełnią się automatycznie!
+            </p>
+          </div>
+
           <SellerForm 
             onSubmit={onComplete}
             submitLabel="ZAPISZ I ROZPOCZNIJ PRACĘ"

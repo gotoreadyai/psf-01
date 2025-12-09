@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { TopBar } from '../components/layout/TopBar';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
-import { Input } from '../components/ui/Input';
 import { InvoicePreview } from '../components/invoices/InvoicePreview';
 import { SellerForm } from '../components/seller/SellerForm';
 import { useInvoiceStore } from '../store/invoiceStore';
@@ -10,6 +9,7 @@ import type { Buyer, Invoice } from '../types/invoice';
 import type { SellerData } from '../types/seller';
 import { formatNumber } from '../utils/formatting';
 import { downloadKSeFXML } from '../utils/exporter';
+import { BuyerForm } from '../components/buyers/ BuyerForm';
 
 export const ManageInvoices: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'seller' | 'buyers' | 'invoices'>('seller');
@@ -203,38 +203,27 @@ const SellerTab: React.FC = () => {
 const BuyersTab: React.FC = () => {
   const { buyers, loadBuyers, addBuyer, updateBuyer, deleteBuyer } = useInvoiceStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Buyer>({ name: '', nip: '', address: '', city: '' });
+  const [editingBuyer, setEditingBuyer] = useState<Buyer | null>(null);
 
   useEffect(() => {
     loadBuyers();
   }, [loadBuyers]);
 
   const openModal = (buyer?: Buyer) => {
-    if (buyer && buyer.id) {
-      setEditingId(buyer.id);
-      setFormData(buyer);
-    } else {
-      setEditingId(null);
-      setFormData({ name: '', nip: '', address: '', city: '' });
-    }
+    setEditingBuyer(buyer || null);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingId(null);
+    setEditingBuyer(null);
   };
 
-  const handleSave = () => {
-    if (!formData.name || !formData.nip) {
-      alert('Uzupełnij wszystkie pola');
-      return;
-    }
-    if (editingId) {
-      updateBuyer(editingId, formData);
+  const handleSave = (buyerData: Buyer) => {
+    if (editingBuyer?.id) {
+      updateBuyer(editingBuyer.id, buyerData);
     } else {
-      addBuyer(formData);
+      addBuyer(buyerData);
     }
     closeModal();
   };
@@ -286,34 +275,15 @@ const BuyersTab: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={editingId ? 'EDYTUJ ODBIORCY' : 'DODAJ ODBIORCY'}
+        title={editingBuyer ? 'EDYTUJ ODBIORCY' : 'DODAJ ODBIORCY'}
         footer={
-          <>
-            <Button variant="outline" onClick={closeModal}>ANULUJ</Button>
-            <Button onClick={handleSave}>ZAPISZ</Button>
-          </>
+          <Button variant="outline" onClick={closeModal}>ANULUJ</Button>
         }
       >
-        <Input
-          label="Nazwa firmy *"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        />
-        <Input
-          label="NIP *"
-          value={formData.nip}
-          onChange={(e) => setFormData({ ...formData, nip: e.target.value })}
-        />
-        <Input
-          label="Ulica i nr *"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-        />
-        <Input
-          label="Kod i miasto *"
-          value={formData.city}
-          placeholder="00-000 Miasto"
-          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+        <BuyerForm
+          initialData={editingBuyer || undefined}
+          onSubmit={handleSave}
+          submitLabel={editingBuyer ? 'ZAPISZ ZMIANY' : 'DODAJ ODBIORCY'}
         />
       </Modal>
     </>

@@ -89,7 +89,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
           <h3 className="text-[11px] uppercase tracking-wider mb-6 text-gray-600 font-medium">
             Pozycje {invoice.documentType === 'proforma' ? 'proformy' : 'faktury'}
           </h3>
-          
+            
           <table className="w-full border-collapse">
             <thead className="border-b-2 border-black">
               <tr>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import type { DocumentType, Invoice, InvoiceItem } from '../../types/invoice';
+import type { DocumentType, Invoice, InvoiceItem, Buyer } from '../../types/invoice';
 import { Input, Select } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { useInvoiceStore } from '../../store/invoiceStore';
 import { getCurrentDate, dateToInput, inputToDate } from '../../utils/formatting';
+import { BuyerForm } from '../buyers/ BuyerForm';
 
 interface InvoiceFormProps {
   onUpdate: (invoice: Invoice) => void;
@@ -65,11 +66,8 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate }) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleBuyerChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      buyer: { ...prev.buyer, [field]: value }
-    }));
+  const handleBuyerChange = (buyer: Buyer) => {
+    setFormData(prev => ({ ...prev, buyer }));
   };
 
   const handleSelectBuyer = (buyerId: string) => {
@@ -211,7 +209,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate }) => {
 
       {buyers.length > 0 && (
         <Select label="Wybierz z listy" onChange={(e) => handleSelectBuyer(e.target.value)}>
-          <option value="">-- Wybierz lub wpisz --</option>
+          <option value="">-- Wybierz lub wyszukaj --</option>
           {buyers.map(b => (
             <option key={b.id} value={b.id}>
               {b.name} ({b.nip})
@@ -220,43 +218,26 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate }) => {
         </Select>
       )}
 
-      <Input
-        label="Nazwa firmy"
-        value={formData.buyer.name}
-        onChange={(e) => handleBuyerChange('name', e.target.value)}
-      />
-
-      <Input
-        label="NIP"
-        value={formData.buyer.nip}
-        onChange={(e) => handleBuyerChange('nip', e.target.value)}
-      />
-
-      <Input
-        label="Ulica i nr"
-        value={formData.buyer.address}
-        onChange={(e) => handleBuyerChange('address', e.target.value)}
-      />
-
-      <Input
-        label="Kod i miasto"
-        value={formData.buyer.city}
-        onChange={(e) => handleBuyerChange('city', e.target.value)}
+      <BuyerForm
+        initialData={formData.buyer}
+        onSubmit={() => {}}
+        showSubmitButton={false}
+        onChange={handleBuyerChange}
       />
 
       <h2 className="text-[11px] uppercase tracking-wider mb-5 mt-8 text-gray-600">Pozycje</h2>
 
       <div className="space-y-4">
         {formData.items.map((item, index) => (
-          <div key={index} className="grid grid-cols-[2fr_1fr_0.7fr_1.2fr_40px] gap-2.5 items-end pb-4 border-b border-gray-300">
+          <div key={index} className="flex gap-2 items-center pb-4 border-b border-gray-300">
             <input
-              className="px-3 py-2 border border-black text-[13px]"
+              className="px-3 py-2 border border-black text-[13px] w-52"
               placeholder="Nazwa"
               value={item.name}
               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
             />
             <input
-              className="px-3 py-2 border border-black text-[13px]"
+              className="px-3 py-2 border border-black text-[13px] flex-1 min-w-0"
               type="number"
               step="0.01"
               placeholder="Ilość"
@@ -264,13 +245,13 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate }) => {
               onChange={(e) => handleItemChange(index, 'quantity', parseFloat(e.target.value) || 0)}
             />
             <input
-              className="px-3 py-2 border border-black text-[13px]"
+              className="px-3 py-2 border border-black text-[13px] flex-1 min-w-0"
               placeholder="Jedn."
               value={item.unit}
               onChange={(e) => handleItemChange(index, 'unit', e.target.value)}
             />
             <input
-              className="px-3 py-2 border border-black text-[13px]"
+              className="px-3 py-2 border border-black text-[13px] flex-1 min-w-0"
               type="number"
               step="0.01"
               placeholder="Cena"
@@ -279,9 +260,9 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({ onUpdate }) => {
             />
             <button
               onClick={() => removeItem(index)}
-              className="text-lg hover:opacity-70"
+              className="text-lg hover:opacity-70 bg-gray-800 w-8 h-8 rounded text-white shadow"
             >
-              🗑️
+              ×
             </button>
           </div>
         ))}

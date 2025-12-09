@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { SellerData } from '../../types/seller';
+import type { KRSCompany } from '../../services/krsApi';
 import { Input } from '../ui/Input';
+import { CompanySearch } from '../buyers/CompanySearch';
 import { validateNIP, validateBankAccount, validatePostalCode } from '../../utils/validation';
 
 interface SellerFormProps {
@@ -35,6 +37,17 @@ export const SellerForm: React.FC<SellerFormProps> = ({
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handleCompanySelect = (company: KRSCompany) => {
+    setFormData(prev => ({
+      ...prev,
+      name: company.name,
+      nip: company.nip,
+      address: company.address,
+      city: company.city
+    }));
+    setErrors({});
   };
 
   const validate = (): boolean => {
@@ -80,75 +93,83 @@ export const SellerForm: React.FC<SellerFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input
-        label="Nazwa firmy *"
-        value={formData.name}
-        onChange={(e) => handleChange('name', e.target.value)}
-        placeholder="np. BLOCKBOX SP. Z O.O."
-      />
-      {errors.name && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.name}</p>}
-
-      <Input
-        label="Ulica i numer *"
-        value={formData.address}
-        onChange={(e) => handleChange('address', e.target.value)}
-        placeholder="np. Kolady 3"
-      />
-      {errors.address && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.address}</p>}
-
-      <Input
-        label="Kod pocztowy i miasto *"
-        value={formData.city}
-        onChange={(e) => handleChange('city', e.target.value)}
-        placeholder="np. 02-691 Warszawa"
-      />
-      {errors.city && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.city}</p>}
-
-      <Input
-        label="NIP *"
-        value={formData.nip}
-        onChange={(e) => handleChange('nip', e.target.value)}
-        placeholder="np. 7393864444"
-        maxLength={10}
-      />
-      {errors.nip && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.nip}</p>}
-
-      <Input
-        label="Numer konta bankowego *"
-        value={formData.bankAccount}
-        onChange={(e) => handleChange('bankAccount', e.target.value)}
-        placeholder="np. PL 41 1140 2004 0000 3202 8296 2689"
-      />
-      {errors.bankAccount && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.bankAccount}</p>}
+      <CompanySearch onSelect={handleCompanySelect} />
 
       <div className="border-t border-gray-300 pt-4 mt-4">
         <h3 className="text-[10px] uppercase tracking-wider mb-4 text-gray-600">
-          Dane opcjonalne
+          Dane wystawcy
         </h3>
 
         <Input
-          label="Email"
-          type="email"
-          value={formData.email || ''}
-          onChange={(e) => handleChange('email', e.target.value)}
-          placeholder="np. kontakt@firma.pl"
+          label="Nazwa firmy *"
+          value={formData.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          placeholder="np. BLOCKBOX SP. Z O.O."
         />
+        {errors.name && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.name}</p>}
 
         <Input
-          label="Telefon"
-          type="tel"
-          value={formData.phone || ''}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          placeholder="np. +48 123 456 789"
+          label="Ulica i numer *"
+          value={formData.address}
+          onChange={(e) => handleChange('address', e.target.value)}
+          placeholder="np. Kolady 3"
         />
+        {errors.address && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.address}</p>}
 
         <Input
-          label="Strona WWW"
-          type="url"
-          value={formData.website || ''}
-          onChange={(e) => handleChange('website', e.target.value)}
-          placeholder="np. https://firma.pl"
+          label="Kod pocztowy i miasto *"
+          value={formData.city}
+          onChange={(e) => handleChange('city', e.target.value)}
+          placeholder="np. 02-691 Warszawa"
         />
+        {errors.city && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.city}</p>}
+
+        <Input
+          label="NIP *"
+          value={formData.nip}
+          onChange={(e) => handleChange('nip', e.target.value)}
+          placeholder="np. 7393864444"
+          maxLength={10}
+        />
+        {errors.nip && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.nip}</p>}
+
+        <Input
+          label="Numer konta bankowego *"
+          value={formData.bankAccount}
+          onChange={(e) => handleChange('bankAccount', e.target.value)}
+          placeholder="np. PL 41 1140 2004 0000 3202 8296 2689"
+        />
+        {errors.bankAccount && <p className="text-red-600 text-xs -mt-3 mb-3">{errors.bankAccount}</p>}
+
+        <div className="border-t border-gray-300 pt-4 mt-4">
+          <h3 className="text-[10px] uppercase tracking-wider mb-4 text-gray-600">
+            Dane opcjonalne
+          </h3>
+
+          <Input
+            label="Email"
+            type="email"
+            value={formData.email || ''}
+            onChange={(e) => handleChange('email', e.target.value)}
+            placeholder="np. kontakt@firma.pl"
+          />
+
+          <Input
+            label="Telefon"
+            type="tel"
+            value={formData.phone || ''}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            placeholder="np. +48 123 456 789"
+          />
+
+          <Input
+            label="Strona WWW"
+            type="url"
+            value={formData.website || ''}
+            onChange={(e) => handleChange('website', e.target.value)}
+            placeholder="np. https://firma.pl"
+          />
+        </div>
       </div>
 
       <button
