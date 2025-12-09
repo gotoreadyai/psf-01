@@ -54,12 +54,14 @@ export const CreateInvoice: React.FC = () => {
       />
       
       <div className="max-w-[1400px] mx-auto px-5 py-5">
-        <div className="border-b-3 border-black pb-5 mb-8">
+        <div className="no-print border-b-3 border-black pb-5 mb-8">
           <h1 className="text-2xl font-bold tracking-tighter">SYSTEM FAKTUR</h1>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-10 items-start">
-          <Sidebar onInvoiceUpdate={setCurrentInvoice} />
+        <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-10 items-start print-grid">
+          <div className="no-print">
+            <Sidebar onInvoiceUpdate={setCurrentInvoice} />
+          </div>
           {currentInvoice && <InvoicePreview invoice={currentInvoice} />}
         </div>
       </div>

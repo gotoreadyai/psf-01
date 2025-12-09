@@ -21,13 +21,24 @@
 @media print {
   @page {
     size: A4;
-    margin: 25mm 20mm;
+    margin: 20mm 15mm;
   }
 
   body {
     @apply p-0 text-[11px];
   }
 
+  /* Hide all no-print elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Make grid single column for print */
+  .print-grid {
+    display: block !important;
+  }
+
+  /* Proforma watermark */
   .proforma-document::before {
     content: 'PROFORMA';
     position: absolute;
@@ -45,10 +56,5 @@
   .proforma-document > * {
     position: relative;
     z-index: 1;
-  }
-
-  /* Hide UI elements in print */
-  button, input[type="radio"], .no-print {
-    display: none !important;
   }
 }

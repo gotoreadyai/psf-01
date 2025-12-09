@@ -13,6 +13,16 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
 
   return (
     <div className={`relative min-h-screen bg-white ${invoice.documentType === 'proforma' ? 'proforma-document' : ''}`}>
+      {/* Print button - hidden in print */}
+      <div className="no-print mb-4 flex justify-end">
+        <button
+          onClick={() => window.print()}
+          className="px-6 py-2 text-[11px] uppercase tracking-wider font-medium bg-black text-white hover:bg-gray-800 transition-colors"
+        >
+          DRUKUJ
+        </button>
+      </div>
+
       {/* Watermark for proforma */}
       {invoice.documentType === 'proforma' && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-black text-black/[0.03] -rotate-45 tracking-[20px] pointer-events-none select-none">

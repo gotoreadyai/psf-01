@@ -354,14 +354,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
             </Button>
           </Collapsible>
 
-          <div className="flex gap-2 mt-5">
-            <Button className="flex-1" onClick={handleSave}>
-              WYSTAW I ZAPISZ
-            </Button>
-            <Button variant="outline" onClick={() => window.print()}>
-              DRUKUJ
-            </Button>
-          </div>
+          <Button className="w-full mt-5" onClick={handleSave}>
+            WYSTAW I ZAPISZ
+          </Button>
         </div>
       )}
 
