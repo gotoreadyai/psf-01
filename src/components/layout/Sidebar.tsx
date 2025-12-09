@@ -11,7 +11,6 @@ import { BuyerForm } from '../buyers/BuyerForm';
 import { BuyerSearch } from '../buyers/BuyerSearch';
 import { SellerForm } from '../seller/SellerForm';
 import { KSeFPanel } from '../ksef/KSeFPanel';
-import { InvoicePreview } from '../invoices/InvoicePreview';
 import { downloadKSeFXML } from '../../utils/exporter';
 
 interface SidebarProps {
@@ -63,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
   const [formData, setFormData] = useState<Invoice>(initialFormData);
   const [isBuyerModalOpen, setIsBuyerModalOpen] = useState(false);
   const [editingBuyer, setEditingBuyer] = useState<Buyer | null>(null);
-  const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
+
 
   useEffect(() => {
     loadBuyers();
@@ -177,6 +176,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
     if (confirm('Usunąć dokument?')) {
       deleteInvoice(id);
     }
+  };
+
+  const handleLoadInvoice = (invoice: Invoice) => {
+    setFormData({
+      ...invoice,
+      id: undefined // Usuwamy ID żeby przy zapisie utworzyła się nowa faktura
+    });
+    setDocType(invoice.documentType);
+    setActiveTab('invoice');
   };
 
   const handleConvertToVAT = (proforma: Invoice) => {
@@ -346,9 +354,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
             </Button>
           </Collapsible>
 
-          <Button className="w-full mt-5" onClick={handleSave}>
-            WYSTAW I ZAPISZ
-          </Button>
+          <div className="flex gap-2 mt-5">
+            <Button className="flex-1" onClick={handleSave}>
+              WYSTAW I ZAPISZ
+            </Button>
+            <Button variant="outline" onClick={() => window.print()}>
+              DRUKUJ
+            </Button>
+          </div>
         </div>
       )}
 
@@ -451,7 +464,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
                       
                       <div className="flex gap-2 mt-2 flex-wrap">
                         <button 
-                          onClick={() => setPreviewInvoice(inv)} 
+                          onClick={() => handleLoadInvoice(inv)} 
                           className="text-[10px] text-blue-600 hover:underline"
                         >
                           Podgląd
@@ -484,21 +497,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onInvoiceUpdate }) => {
                 })}
             </div>
           )}
-
-          <Modal
-            isOpen={!!previewInvoice}
-            onClose={() => setPreviewInvoice(null)}
-            title="PODGLĄD DOKUMENTU"
-            maxWidth="max-w-4xl"
-            footer={
-              <>
-                <Button variant="outline" onClick={() => setPreviewInvoice(null)}>ZAMKNIJ</Button>
-                <Button onClick={() => window.print()}>DRUKUJ</Button>
-              </>
-            }
-          >
-            {previewInvoice && <InvoicePreview invoice={previewInvoice} />}
-          </Modal>
         </div>
       )}
 
