@@ -30,6 +30,23 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
             }
           </h1>
           
+          {/* KSeF status badge */}
+          {invoice.ksef && invoice.documentType === 'vat' && (
+            <div className={`inline-block px-3 py-1 text-[10px] uppercase tracking-wider mb-4 ${
+              invoice.ksef.status === 'accepted' ? 'bg-green-100 text-green-800' :
+              invoice.ksef.status === 'sent' || invoice.ksef.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+              invoice.ksef.status === 'rejected' || invoice.ksef.status === 'error' ? 'bg-red-100 text-red-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              KSeF: {invoice.ksef.status === 'accepted' ? 'Zaakceptowana' :
+                     invoice.ksef.status === 'sent' ? 'Wysłana' :
+                     invoice.ksef.status === 'pending' ? 'Oczekuje' :
+                     invoice.ksef.status === 'rejected' ? 'Odrzucona' :
+                     invoice.ksef.status === 'error' ? 'Błąd' : 'Nie wysłana'}
+              {invoice.ksef.ksefNumber && ` | ${invoice.ksef.ksefNumber}`}
+            </div>
+          )}
+          
           <div className="grid grid-cols-2 gap-3 text-[11px]">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] uppercase tracking-wide text-gray-600 font-medium">
@@ -89,7 +106,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
           <h3 className="text-[11px] uppercase tracking-wider mb-6 text-gray-600 font-medium">
             Pozycje {invoice.documentType === 'proforma' ? 'proformy' : 'faktury'}
           </h3>
-            
+          
           <table className="w-full border-collapse">
             <thead className="border-b-2 border-black">
               <tr>
@@ -186,7 +203,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
               : 'Faktura bez podpisu odbiorcy'
             }
           </div>
-          <div>Druk: https://psf.onrender.com/ | strona 1 z 1</div>
+          <div>Druk: System Faktur | strona 1 z 1</div>
         </div>
       </div>
     </div>

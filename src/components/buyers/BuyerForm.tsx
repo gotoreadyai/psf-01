@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Buyer } from '../../types/invoice';
 import { Input } from '../ui/Input';
-import { CompanySearch } from './CompanySearch';
+import { BuyerSearch } from './BuyerSearch';
 import { validateNIP, validatePostalCode } from '../../utils/validation';
-import type { KRSCompany } from '../../services/krsApi';
 
 interface BuyerFormProps {
   initialData?: Buyer;
   onSubmit: (data: Buyer) => void;
   submitLabel?: string;
   showSubmitButton?: boolean;
+  showSearch?: boolean;
   onChange?: (data: Buyer) => void;
 }
 
@@ -18,6 +18,7 @@ export const BuyerForm: React.FC<BuyerFormProps> = ({
   onSubmit,
   submitLabel = 'ZAPISZ',
   showSubmitButton = true,
+  showSearch = true,
   onChange
 }) => {
   const [formData, setFormData] = useState<Buyer>(
@@ -32,7 +33,12 @@ export const BuyerForm: React.FC<BuyerFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const isInitialMount = useRef(true);
 
-  // Notify parent of changes (skip initial mount to avoid infinite loop)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -46,19 +52,18 @@ export const BuyerForm: React.FC<BuyerFormProps> = ({
 
   const handleChange = (field: keyof Buyer, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
-  const handleCompanySelect = (company: KRSCompany) => {
+  const handleBuyerSelect = (buyer: Buyer) => {
     setFormData({
       ...formData,
-      name: company.name,
-      nip: company.nip,
-      address: company.address,
-      city: company.city
+      name: buyer.name,
+      nip: buyer.nip,
+      address: buyer.address,
+      city: buyer.city
     });
     setErrors({});
   };
@@ -66,7 +71,6 @@ export const BuyerForm: React.FC<BuyerFormProps> = ({
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    // Required fields
     if (!formData.name.trim()) {
       newErrors.name = 'Nazwa firmy jest wymagana';
     }
@@ -100,12 +104,14 @@ export const BuyerForm: React.FC<BuyerFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <CompanySearch onSelect={handleCompanySelect} />
+      {showSearch && <BuyerSearch onSelect={handleBuyerSelect} />}
 
-      <div className="border-t border-gray-300 pt-4 mt-4">
-        <h3 className="text-[10px] uppercase tracking-wider mb-4 text-gray-600">
-          Dane nabywcy
-        </h3>
+      <div className={showSearch ? "border-t border-gray-300 pt-4 mt-4" : ""}>
+        {showSearch && (
+          <h3 className="text-[10px] uppercase tracking-wider mb-4 text-gray-600">
+            Dane nabywcy
+          </h3>
+        )}
 
         <Input
           label="Nazwa firmy *"

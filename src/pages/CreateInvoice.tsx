@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TopBar } from '../components/layout/TopBar';
-import { InvoiceForm } from '../components/invoices/InvoiceForm';
+import { Sidebar } from '../components/layout/Sidebar';
 import { InvoicePreview } from '../components/invoices/InvoicePreview';
 import { SellerSetupModal } from '../components/seller/SellerSetupModal';
 import type { Invoice } from '../types/invoice';
@@ -21,10 +20,9 @@ export const CreateInvoice: React.FC = () => {
     saveSeller(data);
     setShowSetup(false);
     
-    // Initialize default invoice with seller data
     setCurrentInvoice({
       documentType: 'vat',
-      invoiceNumber: '1/11/2025',
+      invoiceNumber: '1/12/2025',
       issueDate: getCurrentDate(),
       saleDate: getCurrentDate(),
       paymentDue: getCurrentDate(),
@@ -44,7 +42,6 @@ export const CreateInvoice: React.FC = () => {
     });
   };
 
-  // If no seller data and not showing setup yet, show loading
   if (!seller && !showSetup) {
     return null;
   }
@@ -57,10 +54,12 @@ export const CreateInvoice: React.FC = () => {
       />
       
       <div className="max-w-[1400px] mx-auto px-5 py-5">
-        <TopBar title="SYSTEM FAKTUR" linkTo="/manage" linkText="ZARZĄDZAJ →" />
+        <div className="border-b-3 border-black pb-5 mb-8">
+          <h1 className="text-2xl font-bold tracking-tighter">SYSTEM FAKTUR</h1>
+        </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-10 items-start">
-          <InvoiceForm onUpdate={setCurrentInvoice} />
+        <div className="grid grid-cols-1 lg:grid-cols-[450px_1fr] gap-10 items-start">
+          <Sidebar onInvoiceUpdate={setCurrentInvoice} />
           {currentInvoice && <InvoicePreview invoice={currentInvoice} />}
         </div>
       </div>

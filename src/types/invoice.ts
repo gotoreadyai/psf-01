@@ -1,5 +1,7 @@
 export type DocumentType = 'vat' | 'proforma';
 
+export type KSeFStatus = 'pending' | 'sent' | 'accepted' | 'rejected' | 'error';
+
 export interface Seller {
   name: string;
   address: string;
@@ -24,6 +26,16 @@ export interface InvoiceItem {
   unitPrice: number;
 }
 
+export interface KSeFData {
+  status: KSeFStatus;
+  sessionToken?: string;
+  referenceNumber?: string;
+  ksefNumber?: string;
+  sentAt?: string;
+  upo?: string;
+  errorMessage?: string;
+}
+
 export interface Invoice {
   id?: string;
   documentType: DocumentType;
@@ -41,6 +53,7 @@ export interface Invoice {
   bankAccount: string;
   createdAt?: string;
   proformaReference?: string;
+  ksef?: KSeFData;
 }
 
 export interface InvoiceCalculations {

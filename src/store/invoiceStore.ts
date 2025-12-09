@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Invoice, Buyer, DocumentType } from '../types/invoice';
+import type { Invoice, Buyer, DocumentType, KSeFData } from '../types/invoice';
 import type { SellerData } from '../types/seller';
 import { storage } from '../utils/storage';
 
@@ -13,6 +13,8 @@ interface InvoiceStore {
   // Buyers
   buyers: Buyer[];
   loadBuyers: () => void;
+  searchBuyers: (query: string) => Buyer[];
+  findBuyerByNIP: (nip: string) => Buyer | undefined;
   addBuyer: (buyer: Buyer) => void;
   updateBuyer: (id: string, buyer: Partial<Buyer>) => void;
   deleteBuyer: (id: string) => void;
@@ -23,14 +25,20 @@ interface InvoiceStore {
   loadInvoices: () => void;
   addInvoice: (invoice: Invoice) => Invoice;
   updateInvoice: (id: string, invoice: Partial<Invoice>) => void;
+  updateInvoiceKSeF: (id: string, ksef: Partial<KSeFData>) => void;
   deleteInvoice: (id: string) => void;
   setFilter: (filter: 'all' | DocumentType) => void;
   exportInvoices: () => string;
   importInvoices: (json: string) => void;
   getNextInvoiceNumber: (type: DocumentType) => string;
+  
+  // KSeF
+  ksefConfig: { environment: 'test' | 'production'; token: string } | null;
+  loadKSeFConfig: () => void;
+  saveKSeFConfig: (config: { environment: 'test' | 'production'; token: string }) => void;
 }
 
-export const useInvoiceStore = create<InvoiceStore>((set) => ({
+export const useInvoiceStore = create<InvoiceStore>((set, get) => ({
   // Seller
   seller: null,
   
@@ -54,10 +62,17 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ buyers: storage.buyers.getAll() });
   },
   
+  searchBuyers: (query: string) => {
+    return storage.buyers.search(query);
+  },
+  
+  findBuyerByNIP: (nip: string) => {
+    return storage.buyers.findByNIP(nip);
+  },
+  
   addBuyer: (buyer) => {
-    const newBuyer = storage.buyers.add(buyer);
+    storage.buyers.add(buyer);
     set({ buyers: storage.buyers.getAll() });
-    return newBuyer;
   },
   
   updateBuyer: (id, buyer) => {
@@ -80,13 +95,27 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
   
   addInvoice: (invoice) => {
     const newInvoice = storage.invoices.add(invoice);
-    set({ invoices: storage.invoices.getAll() });
+    set({ 
+      invoices: storage.invoices.getAll(),
+      buyers: storage.buyers.getAll() // Refresh buyers in case new one was added
+    });
     return newInvoice;
   },
   
   updateInvoice: (id, invoice) => {
     storage.invoices.update(id, invoice);
     set({ invoices: storage.invoices.getAll() });
+  },
+  
+  updateInvoiceKSeF: (id, ksef) => {
+    const invoices = storage.invoices.getAll();
+    const invoice = invoices.find(inv => inv.id === id);
+    if (invoice) {
+      storage.invoices.update(id, {
+        ksef: { ...invoice.ksef, ...ksef } as KSeFData
+      });
+      set({ invoices: storage.invoices.getAll() });
+    }
   },
   
   deleteInvoice: (id) => {
@@ -109,5 +138,17 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
   
   getNextInvoiceNumber: (type) => {
     return storage.invoices.getNextNumber(type);
+  },
+  
+  // KSeF
+  ksefConfig: null,
+  
+  loadKSeFConfig: () => {
+    set({ ksefConfig: storage.ksef.getConfig() });
+  },
+  
+  saveKSeFConfig: (config) => {
+    storage.ksef.setConfig(config);
+    set({ ksefConfig: config });
   }
 }));

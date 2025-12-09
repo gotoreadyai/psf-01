@@ -81,7 +81,6 @@ export function inputToDate(str: string): string {
 }
 
 export function isoToDate(str: string): string {
-  // przyjmuje "DD-MM-YYYY" lub "YYYY-MM-DD" i zwraca "YYYY-MM-DD"
   if (!str) return '';
   if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
   const m = str.match(/^(\d{2})-(\d{2})-(\d{4})$/);
