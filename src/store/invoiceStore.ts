@@ -38,7 +38,7 @@ interface InvoiceStore {
   saveKSeFConfig: (config: { environment: 'test' | 'production'; token: string }) => void;
 }
 
-export const useInvoiceStore = create<InvoiceStore>((set, get) => ({
+export const useInvoiceStore = create<InvoiceStore>((set, _get) => ({
   // Seller
   seller: null,
   

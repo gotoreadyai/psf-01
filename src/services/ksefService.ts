@@ -67,8 +67,8 @@ class KSeFService {
         await this.initSession();
       }
 
-      // Generate XML
-      const xml = buildKSeFXML(invoice);
+      // Generate XML (will be used when real API is implemented)
+      buildKSeFXML(invoice);
 
       // In real implementation, this would:
       // 1. POST /online/Invoice/Send with the XML
