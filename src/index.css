@@ -21,11 +21,12 @@
 @media print {
   @page {
     size: A4;
-    margin: 20mm 15mm;
+    margin: 10mm 12mm;
   }
 
   body {
-    @apply p-0 text-[11px];
+    @apply p-0;
+    font-size: 9px !important;
   }
 
   /* Hide all no-print elements */
@@ -38,6 +39,115 @@
     display: block !important;
   }
 
+  /* Reduce spacing for print */
+  .min-h-screen {
+    min-height: auto !important;
+  }
+
+  h1 {
+    font-size: 18px !important;
+    padding: 8px 0 !important;
+  }
+
+  .py-6 {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .pb-4 {
+    padding-bottom: 6px !important;
+  }
+
+  .mb-5 {
+    margin-bottom: 8px !important;
+  }
+
+  .my-6 {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .mt-10 {
+    margin-top: 10px !important;
+  }
+
+  .mt-7, .pt-7 {
+    margin-top: 8px !important;
+    padding-top: 8px !important;
+  }
+
+  .p-8 {
+    padding: 10px !important;
+  }
+
+  .py-4 {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .py-3\.5 {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .gap-5 {
+    gap: 10px !important;
+  }
+
+  .gap-3 {
+    gap: 6px !important;
+  }
+
+  .mb-6 {
+    margin-bottom: 6px !important;
+  }
+
+  .mb-2\.5 {
+    margin-bottom: 4px !important;
+  }
+
+  /* Table text sizes */
+  table {
+    font-size: 9px !important;
+  }
+
+  th, td {
+    padding: 4px 2px !important;
+  }
+
+  /* Text sizes */
+  .text-\[28px\] {
+    font-size: 18px !important;
+  }
+
+  .text-\[18px\] {
+    font-size: 14px !important;
+  }
+
+  .text-\[15px\] {
+    font-size: 11px !important;
+  }
+
+  .text-\[14px\] {
+    font-size: 9px !important;
+  }
+
+  .text-\[13px\] {
+    font-size: 9px !important;
+  }
+
+  .text-\[12px\] {
+    font-size: 8px !important;
+  }
+
+  .text-\[11px\] {
+    font-size: 8px !important;
+  }
+
+  .text-\[10px\] {
+    font-size: 7px !important;
+  }
+
   /* Proforma watermark */
   .proforma-document::before {
     content: 'PROFORMA';
@@ -45,12 +155,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: 140px;
+    font-size: 100px;
     font-weight: 900;
     color: rgba(0, 0, 0, 0.04);
     z-index: 0;
     pointer-events: none;
-    letter-spacing: 25px;
+    letter-spacing: 20px;
   }
 
   .proforma-document > * {

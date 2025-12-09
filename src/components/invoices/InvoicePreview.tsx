@@ -213,7 +213,9 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
               : 'Faktura bez podpisu odbiorcy'
             }
           </div>
-          <div>Druk: System Faktur | strona 1 z 1</div>
+          <div className='text-right'>  <div>Druk: Darmowy System Faktur</div>
+          <div>https://psf-bwci.onrender.com | strona 1 z 1</div></div>
+        
         </div>
       </div>
     </div>
